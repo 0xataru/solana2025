@@ -39,23 +39,19 @@ const instruction = SystemProgram.transfer({
     lamports: 0.01 * LAMPORTS_PER_SOL,
 });
 
-transaction.add(instruction);
-
 const memoProgram = new PublicKey(
     "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
   );
-  
-  const memoText = "Hello from Solana!";
-  
+  const memoText = "Hello from Solana!";  
   const addMemoInstruction = new TransactionInstruction({
-    keys: [{ pubkey: sender.publicKey, isSigner: true, isWritable: true }],
-    data: Buffer.from(memoText, "utf-8"),
-    programId: memoProgram,
-  });
-  
-  transaction.add(addMemoInstruction);
-  
-  console.log(`📝 memo is: ${memoText}`);
+      keys: [{ pubkey: sender.publicKey, isSigner: true, isWritable: true }],
+      data: Buffer.from(memoText, "utf-8"),
+      programId: memoProgram,
+    });
+transaction.add(instruction);  
+transaction.add(addMemoInstruction);
+    
+console.log(`📝 memo is: ${memoText}`);
 
 const signature = await sendAndConfirmTransaction(connection, transaction, [sender]);
 
