@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction } from "@solana/web3.js";
+import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
 
 let privateKey = process.env.SECRET_KEY;
 let recipientPublicKey = process.env.RECIPIENT_PUBLIC_KEY;
@@ -30,6 +30,22 @@ const instruction = SystemProgram.transfer({
 });
 
 transaction.add(instruction);
+
+const memoProgram = new PublicKey(
+    "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
+  );
+  
+  const memoText = "Hello from Solana!";
+  
+  const addMemoInstruction = new TransactionInstruction({
+    keys: [{ pubkey: sender.publicKey, isSigner: true, isWritable: true }],
+    data: Buffer.from(memoText, "utf-8"),
+    programId: memoProgram,
+  });
+  
+  transaction.add(addMemoInstruction);
+  
+  console.log(`📝 memo is: ${memoText}`);
 
 const signature = await sendAndConfirmTransaction(connection, transaction, [sender]);
 
